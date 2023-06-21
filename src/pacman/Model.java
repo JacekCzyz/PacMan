@@ -11,27 +11,21 @@ public class Model extends JPanel implements ActionListener {
     private Dimension dim;  //swing class
     private final Font font = new Font("Arial", Font.BOLD, 14);
     private boolean Running = false;
-    private boolean Pac_alive = true;
+
     public final int TILE_SIZE = 24;
     public final int N_TILES = 15;
     private final int SCREEN_SIZE = N_TILES * TILE_SIZE;
-
-    private final int PACMAN_VEL = 6;
-
     private int lives, score;
     //private Image heart_img, Linky_img, Pinky_img, Inky_img, Clyde_img;
     private Image heart_img;
-    private Image up, down, left, right; //obrazki do ruchu w kazda strone
-    private int pacman_x, pacman_y, pacman_dx, pacman_dy;
     private int req_dx, req_dy;
-
     private final int valid_vels[] = {1,2,3,4,5,6,8};
     private final int max_speed = 6;
     public int cur_speed = 3;
     private short [] screen_data;
     private Timer timer; //swing class
     private Ghosts ghosts = new Ghosts();
-
+    private PacGuy pac_person = new PacGuy();
     private final short level_data[] = {    //0-sciana, 1-lewa granica, 2-gorna, 4-prawa, 8-dolna, 16-kropka do zjedzenia, granice przy scianach tez sie licza
             19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
             17, 16, 16, 16, 16, 24, 16, 16, 16, 16, 16, 16, 16, 16, 20,
@@ -60,10 +54,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private  void load_imgs(){
-        down = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/down.gif").getImage();
-        left = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/left.gif").getImage();
-        right = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/right.gif").getImage();
-        up = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/up.gif").getImage();
+        pac_person.load_pac_images();
         heart_img = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/heart.png").getImage();
         ghosts.load_ghost_imgs();
     }
@@ -71,21 +62,19 @@ public class Model extends JPanel implements ActionListener {
     private void var_init(){
         screen_data = new short[N_TILES * N_TILES];
         dim = new Dimension(400,400);
-        //ghosts = new Ghosts();
-
         timer = new Timer(40, this);
         timer.start();
     }
 
 
     private void playGame(Graphics2D g2d){
-        if(Pac_alive==false){
+        if(pac_person.Pac_alive==false){
             death();
         }
         else{
-            move_pac();
-            draw_pac(g2d);
-            Pac_alive = ghosts.move_ghosts(g2d, screen_data, TILE_SIZE, N_TILES, pacman_x, pacman_y, Running, Pac_alive);
+            pac_person.move_pac(req_dx, req_dy, screen_data, score);
+            pac_person.draw_pac(g2d, req_dx, req_dy);
+            pac_person.Pac_alive = ghosts.move_ghosts(g2d, screen_data, TILE_SIZE, N_TILES, pac_person, Running);
             check_maze();
         }
     }
@@ -134,46 +123,6 @@ public class Model extends JPanel implements ActionListener {
         continue_level();
     }
 
-
-
-    public void move_pac(){
-        int pos;
-        short ch;
-        if(pacman_x%TILE_SIZE==0 && pacman_y%TILE_SIZE==0){
-            pos = pacman_x/TILE_SIZE + N_TILES * (int) (pacman_y/TILE_SIZE);
-            ch = screen_data[pos];
-            if((ch & 16) !=0){
-                screen_data[pos]= (short) (ch & 15);
-                score++;
-            }
-
-            if(req_dx != 0 || req_dy != 0){
-                if(!((req_dx==-1 && req_dy==0 && (ch&1)!=0) || (req_dx==1 && req_dy==0 && (ch&4) !=0) || (req_dx==0 && req_dy==-1 && (ch&2) !=0) || (req_dx==0 && req_dy==1 && (ch&8) !=0))) {
-                    pacman_dx=req_dx;
-                    pacman_dy=req_dy;
-                }
-            }
-
-            if((pacman_dx==-1 && pacman_dy==0 && (ch&1) != 0) || (pacman_dx==1 && pacman_dy == 0 && (ch&4)!=0) || (pacman_dx==0 && pacman_dy == -1 && (ch&2)!=0) || (pacman_dx==0 && pacman_dy == 1 && (ch&8)!=0)){
-                pacman_dx=0;
-                pacman_dy=0;
-            }
-        }
-        pacman_x = pacman_x + PACMAN_VEL*pacman_dx;
-        pacman_y = pacman_y + PACMAN_VEL*pacman_dy;
-    }
-
-    public void draw_pac(Graphics2D g2d){
-        if (req_dx == -1) {
-            g2d.drawImage(left, pacman_x + 1, pacman_y + 1, this);
-        } else if (req_dx == 1) {
-            g2d.drawImage(right, pacman_x + 1, pacman_y + 1, this);
-        } else if (req_dy == -1) {
-            g2d.drawImage(up, pacman_x + 1, pacman_y + 1, this);
-        } else {
-            g2d.drawImage(down, pacman_x + 1, pacman_y + 1, this);
-        }
-    }
 
 
 
@@ -242,14 +191,10 @@ public class Model extends JPanel implements ActionListener {
         int dx = 1;
         int random = (int) (Math.random() * (cur_speed + 1));;
         ghosts.ghost_set_on_level(dx, random, cur_speed, valid_vels);
+        pac_person.pacguy_set_on_level();
 
-        pacman_x = 7 * TILE_SIZE;  //start position
-        pacman_y = 11 * TILE_SIZE;
-        pacman_dx = 0;	//reset direction move
-        pacman_dy = 0;
         req_dx = 0;		// reset direction controls
         req_dy = 0;
-        Pac_alive = true;
     }
 
 
