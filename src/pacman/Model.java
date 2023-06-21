@@ -85,7 +85,7 @@ public class Model extends JPanel implements ActionListener {
         else{
             move_pac();
             draw_pac(g2d);
-            ghosts.move_ghosts(g2d, screen_data, TILE_SIZE, N_TILES, pacman_x, pacman_y, Running, Pac_alive);
+            Pac_alive = ghosts.move_ghosts(g2d, screen_data, TILE_SIZE, N_TILES, pacman_x, pacman_y, Running, Pac_alive);
             check_maze();
         }
     }

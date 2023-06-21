@@ -39,7 +39,6 @@ public class Ghosts extends JPanel {
             ghost_dy[i] = 0;
             ghost_dx[i] = dx;
             dx = -dx;
-            //random =
 
             if (random > cur_speed) {
                 random = cur_speed;
@@ -54,7 +53,7 @@ public class Ghosts extends JPanel {
     }
 
 
-    public void move_ghosts(Graphics2D g2d, short [] screen_data, int TILE_SIZE, int N_TILES, int pacman_x, int pacman_y, boolean Running, boolean Pac_alive) {
+    public boolean move_ghosts(Graphics2D g2d, short [] screen_data, int TILE_SIZE, int N_TILES, int pacman_x, int pacman_y, boolean Running, boolean Pac_alive) {
 
         int pos;
         int count;
@@ -124,6 +123,7 @@ public class Ghosts extends JPanel {
                 Pac_alive = false;
             }
         }
+        return Pac_alive;
     }
 
 
