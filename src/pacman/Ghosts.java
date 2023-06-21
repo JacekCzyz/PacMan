@@ -222,7 +222,7 @@ public void move_ghosts(int ghostIndex, Graphics2D g2d, short [] screen_data, in
                         && pacman_y > (ghost_y[ghostIndex] - 12) && pacman_y < (ghost_y[ghostIndex] + 12)
                         && Running) {
 
-                    pacman.set_alive(false);
+                    pacman.Pac_alive=false;
                 }
         }
     }

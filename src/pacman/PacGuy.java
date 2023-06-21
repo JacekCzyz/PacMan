@@ -28,7 +28,7 @@ public class PacGuy extends JFrame {
         return Pac_alive;
     }
 
-    public void move_pac(int req_dx, int req_dy, short[] screen_data, int score){
+    public int move_pac(int req_dx, int req_dy, short[] screen_data, int score){
         int pos;
         short ch;
         if(pacman_x%TILE_SIZE==0 && pacman_y%TILE_SIZE==0){
@@ -53,6 +53,7 @@ public class PacGuy extends JFrame {
         }
         pacman_x = pacman_x + PACMAN_VEL*pacman_dx;
         pacman_y = pacman_y + PACMAN_VEL*pacman_dy;
+        return score;
     }
 
     public void draw_pac(Graphics2D g2d, int req_dx, int req_dy){
