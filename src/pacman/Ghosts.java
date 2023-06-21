@@ -28,21 +28,25 @@ public class Ghosts extends JPanel {
         dy=new int[4];
 
 
-//        for (int i = 0; i < N_GHOSTS; i++) {
-//
-//            ghost_y[i] = 4 * TILE_SIZE; //start position
-//            ghost_x[i] = 4 * TILE_SIZE;
-//            ghost_dy[i] = 0;
-//            ghost_dx[i] = dx;
-//            dx = -dx;
-//            random = (int) (Math.random() * (cur_speed + 1));
-//
-//            if (random > cur_speed) {
-//                random = cur_speed;
-//            }
-//
-//            ghost_vel[i] = valid_vels[random];
-//        }
+
+    }
+
+    public void ghost_set_on_level(int dx, int random, int cur_speed, int[] valid_vels){
+
+        for (int i = 0; i < N_GHOSTS; i++) {
+            ghost_y[i] = 4 * TILE_SIZE; //start position
+            ghost_x[i] = 4 * TILE_SIZE;
+            ghost_dy[i] = 0;
+            ghost_dx[i] = dx;
+            dx = -dx;
+            //random =
+
+            if (random > cur_speed) {
+                random = cur_speed;
+            }
+
+            ghost_vel[i] = valid_vels[random];
+        }
     }
 
     public  void load_ghost_imgs(){

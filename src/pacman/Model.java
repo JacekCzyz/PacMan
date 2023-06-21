@@ -27,7 +27,7 @@ public class Model extends JPanel implements ActionListener {
 
     private final int valid_vels[] = {1,2,3,4,5,6,8};
     private final int max_speed = 6;
-    private int cur_speed = 3;
+    public int cur_speed = 3;
     private short [] screen_data;
     private Timer timer; //swing class
     private Ghosts ghosts = new Ghosts();
@@ -233,13 +233,15 @@ public class Model extends JPanel implements ActionListener {
         for(int i=0; i<N_TILES*N_TILES; i++){
             screen_data[i]=level_data[i];
         }
+        continue_level();
     }
 
 
     private void continue_level() {
 
         int dx = 1;
-        int random;
+        int random = (int) (Math.random() * (cur_speed + 1));;
+        ghosts.ghost_set_on_level(dx, random, cur_speed, valid_vels);
 
         pacman_x = 7 * TILE_SIZE;  //start position
         pacman_y = 11 * TILE_SIZE;
