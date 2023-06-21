@@ -26,9 +26,6 @@ public class Ghosts extends JPanel {
         ghost_vel = new int[MAXN_GHOSTS];
         dx=new int[4];
         dy=new int[4];
-
-
-
     }
 
     public void ghost_set_on_level(int dx, int random, int cur_speed, int[] valid_vels){
@@ -53,11 +50,14 @@ public class Ghosts extends JPanel {
     }
 
 
-    public boolean move_ghosts(Graphics2D g2d, short [] screen_data, int TILE_SIZE, int N_TILES, int pacman_x, int pacman_y, boolean Running, boolean Pac_alive) {
+    public boolean move_ghosts(Graphics2D g2d, short [] screen_data, int TILE_SIZE, int N_TILES, PacGuy pacman, boolean Running) {
 
         int pos;
         int count;
 
+        int pacman_x = pacman.get_x();
+        int pacman_y = pacman.get_y();
+        boolean Pac_alive = pacman.Pac_alive;
         for (int i = 0; i < N_GHOSTS; i++) {
             if (ghost_x[i] % TILE_SIZE == 0 && ghost_y[i] % TILE_SIZE == 0) {
                 pos = ghost_x[i] / TILE_SIZE + N_TILES * (int) (ghost_y[i] / TILE_SIZE);
