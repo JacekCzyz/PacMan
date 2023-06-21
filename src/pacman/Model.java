@@ -12,18 +12,15 @@ public class Model extends JPanel implements ActionListener {
     private final Font font = new Font("Arial", Font.BOLD, 14);
     private boolean Running = false;
     private boolean Pac_alive = true;
-    private final int TILE_SIZE = 24;
-    private final int N_TILES = 15;
+    public final int TILE_SIZE = 24;
+    public final int N_TILES = 15;
     private final int SCREEN_SIZE = N_TILES * TILE_SIZE;
-    private final int MAXN_GHOSTS = 12;
+
     private final int PACMAN_VEL = 6;
 
-    private int N_GHOSTS = 6;
     private int lives, score;
-    private int [] dx, dy;
-    private int [] ghost_x, ghost_y, ghost_dx, ghost_dy, ghost_vel;
     //private Image heart_img, Linky_img, Pinky_img, Inky_img, Clyde_img;
-    private Image heart_img, ghost_img;
+    private Image heart_img;
     private Image up, down, left, right; //obrazki do ruchu w kazda strone
     private int pacman_x, pacman_y, pacman_dx, pacman_dy;
     private int req_dx, req_dy;
@@ -33,6 +30,7 @@ public class Model extends JPanel implements ActionListener {
     private int cur_speed = 3;
     private short [] screen_data;
     private Timer timer; //swing class
+    private Ghosts ghosts = new Ghosts();
 
     private final short level_data[] = {    //0-sciana, 1-lewa granica, 2-gorna, 4-prawa, 8-dolna, 16-kropka do zjedzenia, granice przy scianach tez sie licza
             19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
@@ -62,30 +60,18 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private  void load_imgs(){
-        down = new ImageIcon("/imgs/down.gif").getImage();
-        left = new ImageIcon("/imgs/left.gif").getImage();
-        right = new ImageIcon("/imgs/right.gif").getImage();
-        up = new ImageIcon("/imgs/up.gif").getImage();
-        ghost_img = new ImageIcon("/imgs/ghost.gif").getImage();
-        heart_img = new ImageIcon("/imgs/heart.png").getImage();
-//        down = new ImageIcon("C:\\Users\\jacek\\IdeaProjects\\Pac Man\\imgs\\down.gif").getImage();
-//        left = new ImageIcon("C:\\Users\\jacek\\IdeaProjects\\Pac Man\\imgs\\left.gif").getImage();
-//        right = new ImageIcon("C:\\Users\\jacek\\IdeaProjects\\Pac Man\\imgs\\right.gif").getImage();
-//        up = new ImageIcon("C:\\Users\\jacek\\IdeaProjects\\Pac Man\\imgs\\up.gif").getImage();
-//        ghost_img = new ImageIcon("C:\\Users\\jacek\\IdeaProjects\\Pac Man\\imgs\\ghost.gif").getImage();
-//        heart_img = new ImageIcon("C:\\Users\\jacek\\IdeaProjects\\Pac Man\\imgs\\heart.png").getImage();
+        down = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/down.gif").getImage();
+        left = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/left.gif").getImage();
+        right = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/right.gif").getImage();
+        up = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/up.gif").getImage();
+        heart_img = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/heart.png").getImage();
+        ghosts.load_ghost_imgs();
     }
 
     private void var_init(){
         screen_data = new short[N_TILES * N_TILES];
         dim = new Dimension(400,400);
-        ghost_x = new int[MAXN_GHOSTS];
-        ghost_dx = new int [MAXN_GHOSTS];
-        ghost_y = new int[MAXN_GHOSTS];
-        ghost_dy = new int[MAXN_GHOSTS];
-        ghost_vel = new int[MAXN_GHOSTS];
-        dx=new int[4];
-        dy=new int[4];
+        //ghosts = new Ghosts();
 
         timer = new Timer(40, this);
         timer.start();
@@ -99,7 +85,7 @@ public class Model extends JPanel implements ActionListener {
         else{
             move_pac();
             draw_pac(g2d);
-            move_ghosts(g2d);
+            ghosts.move_ghosts(g2d, screen_data, TILE_SIZE, N_TILES, pacman_x, pacman_y, Running, Pac_alive);
             check_maze();
         }
     }
@@ -132,10 +118,6 @@ public class Model extends JPanel implements ActionListener {
         }
         if (finished) {
             score += 50;
-
-            if (N_GHOSTS < MAXN_GHOSTS) {
-                N_GHOSTS++;
-            }
             if (cur_speed < max_speed) {
                 cur_speed++;
             }
@@ -153,81 +135,6 @@ public class Model extends JPanel implements ActionListener {
     }
 
 
-    private void move_ghosts(Graphics2D g2d) {
-
-        int pos;
-        int count;
-
-        for (int i = 0; i < N_GHOSTS; i++) {
-            if (ghost_x[i] % TILE_SIZE == 0 && ghost_y[i] % TILE_SIZE == 0) {
-                pos = ghost_x[i] / TILE_SIZE + N_TILES * (int) (ghost_y[i] / TILE_SIZE);
-
-                count = 0;
-
-                if ((screen_data[pos] & 1) == 0 && ghost_dx[i] != 1) {
-                    dx[count] = -1;
-                    dy[count] = 0;
-                    count++;
-                }
-
-                if ((screen_data[pos] & 2) == 0 && ghost_dy[i] != 1) {
-                    dx[count] = 0;
-                    dy[count] = -1;
-                    count++;
-                }
-
-                if ((screen_data[pos] & 4) == 0 && ghost_dx[i] != -1) {
-                    dx[count] = 1;
-                    dy[count] = 0;
-                    count++;
-                }
-
-                if ((screen_data[pos] & 8) == 0 && ghost_dy[i] != -1) {
-                    dx[count] = 0;
-                    dy[count] = 1;
-                    count++;
-                }
-
-                if (count == 0) {
-
-                    if ((screen_data[pos] & 15) == 15) {
-                        ghost_dx[i] = 0;
-                        ghost_dy[i] = 0;
-                    } else {
-                        ghost_dx[i] = -ghost_dx[i];
-                        ghost_dy[i] = -ghost_dy[i];
-                    }
-
-                } else {
-
-                    count = (int) (Math.random() * count);
-
-                    if (count > 3) {
-                        count = 3;
-                    }
-
-                    ghost_dx[i] = dx[count];
-                    ghost_dy[i] = dy[count];
-                }
-
-            }
-
-            ghost_x[i] = ghost_x[i] + (ghost_dx[i] * ghost_vel[i]);
-            ghost_y[i] = ghost_y[i] + (ghost_dy[i] * ghost_vel[i]);
-            drawGhost(g2d, ghost_x[i] + 1, ghost_y[i] + 1);
-
-            if (pacman_x > (ghost_x[i] - 12) && pacman_x < (ghost_x[i] + 12)
-                    && pacman_y > (ghost_y[i] - 12) && pacman_y < (ghost_y[i] + 12)
-                    && Running) {
-
-                Pac_alive = false;
-            }
-        }
-    }
-
-    public void drawGhost(Graphics2D g2d, int x, int y){
-        g2d.drawImage(ghost_img, x, y, this);
-    }
 
     public void move_pac(){
         int pos;
@@ -318,7 +225,7 @@ public class Model extends JPanel implements ActionListener {
         lives = 3;
         score = 0;
         init_level();
-        N_GHOSTS=6;
+        //N_GHOSTS=6;
         cur_speed=3;
     }
 
@@ -333,22 +240,6 @@ public class Model extends JPanel implements ActionListener {
 
         int dx = 1;
         int random;
-
-        for (int i = 0; i < N_GHOSTS; i++) {
-
-            ghost_y[i] = 4 * TILE_SIZE; //start position
-            ghost_x[i] = 4 * TILE_SIZE;
-            ghost_dy[i] = 0;
-            ghost_dx[i] = dx;
-            dx = -dx;
-            random = (int) (Math.random() * (cur_speed + 1));
-
-            if (random > cur_speed) {
-                random = cur_speed;
-            }
-
-            ghost_vel[i] = valid_vels[random];
-        }
 
         pacman_x = 7 * TILE_SIZE;  //start position
         pacman_y = 11 * TILE_SIZE;
