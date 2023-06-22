@@ -11,6 +11,7 @@ public class Model extends JPanel implements ActionListener {
     private Dimension dim;  //swing class
     private final Font font = new Font("Arial", Font.BOLD, 14);
     private boolean Running = false;
+    private boolean ghost_on_their_way = false;
 
     public final int TILE_SIZE = 24;
     public final int N_TILES = 15;
@@ -19,9 +20,8 @@ public class Model extends JPanel implements ActionListener {
     //private Image heart_img, Linky_img, Pinky_img, Inky_img, Clyde_img;
     private Image heart_img;
     private int req_dx, req_dy;
-    private final int valid_vels[] = {1,2,3,4,5,6,8};
-    private final int max_speed = 6;
-    public int cur_speed = 3;
+    private final int max_speed = 3;
+    public int speed = 3;
     private short [] screen_data;
     private Timer timer; //swing class
     private Ghosts ghosts = new Ghosts();
@@ -55,7 +55,7 @@ public class Model extends JPanel implements ActionListener {
 
     private  void load_imgs(){
         pac_person.load_pac_images();
-        heart_img = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/heart.png").getImage();
+        heart_img = new ImageIcon("src/imgs/heart.png").getImage();
         ghosts.load_ghost_imgs();
     }
 
@@ -68,14 +68,21 @@ public class Model extends JPanel implements ActionListener {
 
 
     private void playGame(Graphics2D g2d){
+        boolean start=false;
+
         if(pac_person.Pac_alive==false){
             death();
         }
         else{
-            pac_person.move_pac(req_dx, req_dy, screen_data, score);
+            if(ghost_on_their_way==false) {
+                ghosts.startGhostThreads(g2d, screen_data, pac_person, Running);
+                ghost_on_their_way=true;
+            }
+            ghosts.drawGhosts(g2d);
+            score = pac_person.move_pac(req_dx, req_dy, screen_data, score);
             pac_person.draw_pac(g2d, req_dx, req_dy);
-            pac_person.Pac_alive = ghosts.move_ghosts(g2d, screen_data, TILE_SIZE, N_TILES, pac_person, Running);
             check_maze();
+
         }
     }
 
@@ -107,8 +114,8 @@ public class Model extends JPanel implements ActionListener {
         }
         if (finished) {
             score += 50;
-            if (cur_speed < max_speed) {
-                cur_speed++;
+            if (speed < max_speed) {
+                speed++;
             }
             init_level();
         }
@@ -175,7 +182,7 @@ public class Model extends JPanel implements ActionListener {
         score = 0;
         init_level();
         //N_GHOSTS=6;
-        cur_speed=3;
+        speed=3;
     }
 
     private void init_level(){
@@ -189,8 +196,8 @@ public class Model extends JPanel implements ActionListener {
     private void continue_level() {
 
         int dx = 1;
-        int random = (int) (Math.random() * (cur_speed + 1));;
-        ghosts.ghost_set_on_level(dx, random, cur_speed, valid_vels);
+        ghosts.ghost_set_on_level(dx, speed);
+
         pac_person.pacguy_set_on_level();
 
         req_dx = 0;		// reset direction controls
