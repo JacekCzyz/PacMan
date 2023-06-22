@@ -42,7 +42,7 @@ public class Ghosts extends JPanel {
 
 
 
-    public void ghost_set_on_level(int dx, int random, int cur_speed, int[] valid_vels){
+    public void ghost_set_on_level(int dx, int speed){
 
         for (int i = 0; i < N_GHOSTS; i++) {
             ghost_y[i] = 4 * TILE_SIZE; //start position
@@ -50,12 +50,7 @@ public class Ghosts extends JPanel {
             ghost_dy[i] = 0;
             ghost_dx[i] = dx;
             dx = -dx;
-
-            if (random > cur_speed) {
-                random = cur_speed;
-            }
-
-            ghost_vel[i] = valid_vels[random];
+            ghost_vel[i]=speed;
         }
     }
 
