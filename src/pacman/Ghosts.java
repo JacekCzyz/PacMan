@@ -93,100 +93,11 @@ public class Ghosts extends JPanel {
             move_ghosts4(3, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running);
         });
         ghostThreads[3].start();
-
-
-
-/*        ghostThreads[4] = new Thread(() -> {
-            System.out.println("Thread ID: " + Thread.currentThread().getId());
-            move_ghosts(4, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running);
-        });
-        ghostThreads[4].start();
-        ghostThreads[5] = new Thread(() -> {
-            System.out.println("Thread ID: " + Thread.currentThread().getId());
-            move_ghosts(5, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running);
-        });
-        ghostThreads[5].start();*/
     }
 
 
 //to jest najlepsze co mamy
-/*
-public void move_ghosts1(int ghostIndex, Graphics2D g2d, short [] screen_data, int TILE_SIZE, int N_TILES, PacGuy pacman, boolean Running) {
-    int pacman_x = pacman.get_x();
-    int pacman_y = pacman.get_y();
-    boolean Pac_alive = pacman.Pac_alive;
 
-    while (true) {
-        //synchronized (ghostLocks[ghostIndex]) {
-            if (ghost_x[ghostIndex] % TILE_SIZE == 0 && ghost_y[ghostIndex] % TILE_SIZE == 0) {
-                int pos = ghost_x[ghostIndex] / TILE_SIZE + N_TILES * (int) (ghost_y[ghostIndex] / TILE_SIZE);
-                int count = 0;
-
-                if ((screen_data[pos] & 1) == 0 && ghost_dx[ghostIndex] != 1) {
-                    dx[count] = -1;
-                    dy[count] = 0;
-                    count++;
-                }
-
-                if ((screen_data[pos] & 2) == 0 && ghost_dy[ghostIndex] != 1) {
-                    dx[count] = 0;
-                    dy[count] = -1;
-                    count++;
-                }
-
-                if ((screen_data[pos] & 4) == 0 && ghost_dx[ghostIndex] != -1) {
-                    dx[count] = 1;
-                    dy[count] = 0;
-                    count++;
-                }
-
-                if ((screen_data[pos] & 8) == 0 && ghost_dy[ghostIndex] != -1) {
-                    dx[count] = 0;
-                    dy[count] = 1;
-                    count++;
-                }
-
-                //synchronized (this) {
-                    if (count == 0) {
-                        if ((screen_data[pos] & 15) == 15) {
-                            ghost_dx[ghostIndex] = 0;
-                            ghost_dy[ghostIndex] = 0;
-                        } else {
-                            ghost_dx[ghostIndex] = -ghost_dx[ghostIndex];
-                            ghost_dy[ghostIndex] = -ghost_dy[ghostIndex];
-                        }
-                    } else {
-                        count = (int) (Math.random() * count);
-                        if (count > 3) {
-                            count = 3;
-                        }
-                        ghost_dx[ghostIndex] = dx[count];
-                        ghost_dy[ghostIndex] = dy[count];
-                    }
-                }
-
-
-            ghost_x[ghostIndex] = ghost_x[ghostIndex] + (ghost_dx[ghostIndex] * ghost_vel[ghostIndex]);
-            ghost_y[ghostIndex] = ghost_y[ghostIndex] + (ghost_dy[ghostIndex] * ghost_vel[ghostIndex]);
-
-            drawGhosts(g2d);
-
-            //drawGhost(g2d, ghost_x[ghostIndex] + 1, ghost_y[ghostIndex] + 1);
-            if (pacman_x > (ghost_x[ghostIndex] - 12) && pacman_x < (ghost_x[ghostIndex] + 12)
-                    && pacman_y > (ghost_y[ghostIndex] - 12) && pacman_y < (ghost_y[ghostIndex] + 12)
-                    && Running) {
-                pacman.set_alive(false);
-            }
-
-            try {
-                Thread.sleep(40);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-       // }
-    }
-}
-*/
 
     public void move_ghosts1(int ghostIndex, Graphics2D g2d, short[] screen_data, int TILE_SIZE, int N_TILES, PacGuy pacman, boolean Running) {
         int ghost_x_copy1 = ghost_x[ghostIndex];
@@ -365,7 +276,7 @@ public void move_ghosts1(int ghostIndex, Graphics2D g2d, short [] screen_data, i
     }
 
 
-    public void move_ghosts3(int ghostIndex, Graphics2D g2d, short [] screen_data, int TILE_SIZE, int N_TILES, PacGuy pacman, boolean Running) {
+    public void move_ghosts3(int ghostIndex, Graphics2D g2d, short[] screen_data, int TILE_SIZE, int N_TILES, PacGuy pacman, boolean Running) {
         int ghost_x_copy3 = ghost_x[ghostIndex];
         int ghost_y_copy3 = ghost_y[ghostIndex];
         int ghost_dx_copy3 = ghost_dx[ghostIndex];
@@ -412,14 +323,36 @@ public void move_ghosts1(int ghostIndex, Graphics2D g2d, short [] screen_data, i
                         ghost_dy_copy3 = -ghost_dy_copy3;
                     }
                 } else {
-                    count = (int) (Math.random() * count);
-                    if (count > 3) {
-                        count = 3;
+                    int pacman_x = pacman.get_x();
+                    int pacman_y = pacman.get_y();
+
+                    // Oblicz różnicę pomiędzy położeniem duszka a Pacmana
+                    if
+                    int dx = pacman_x - ghost_x_copy3;
+                    int dy = pacman_y - ghost_y_copy3;
+
+                    // Znajdź dominujący kierunek (poziomy lub pionowy) i ustaw odpowiednie wartości dx3 i dy3
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        dx3[0] = (dx > 0) ? 1 : -1;
+                        dy3[0] = 0;
+                        dx3[1] = 0;
+                        dy3[1] = (dy > 0) ? 1 : -1;
+                    } else {
+                        dx3[0] = 0;
+                        dy3[0] = (dy > 0) ? 1 : -1;
+                        dx3[1] = (dx > 0) ? 1 : -1;
+                        dy3[1] = 0;
                     }
-                    ghost_dx_copy3 = dx3[count];
-                    ghost_dy_copy3 = dy3[count];
+
+                    ghost_dx_copy3 = dx3[0];
+                    ghost_dy_copy3 = dy3[0];
                 }
             }
+
+            int future_x = ghost_x_copy3 + (ghost_dx_copy3 * ghost_vel[ghostIndex]);
+            int future_y = ghost_y_copy3 + (ghost_dy_copy3 * ghost_vel[ghostIndex]);
+
+            if()
 
             ghost_x_copy3 = ghost_x_copy3 + (ghost_dx_copy3 * ghost_vel[ghostIndex]);
             ghost_y_copy3 = ghost_y_copy3 + (ghost_dy_copy3 * ghost_vel[ghostIndex]);
@@ -442,7 +375,6 @@ public void move_ghosts1(int ghostIndex, Graphics2D g2d, short [] screen_data, i
                 e.printStackTrace();
             }
 
-
             synchronized (this) {
                 // Przypisanie wartości z kopii zmiennych do zmiennych głównych
                 ghost_x[ghostIndex] = ghost_x_copy3;
@@ -452,6 +384,95 @@ public void move_ghosts1(int ghostIndex, Graphics2D g2d, short [] screen_data, i
             }
         }
     }
+
+
+//    public void move_ghosts3(int ghostIndex, Graphics2D g2d, short [] screen_data, int TILE_SIZE, int N_TILES, PacGuy pacman, boolean Running) {
+//        int ghost_x_copy3 = ghost_x[ghostIndex];
+//        int ghost_y_copy3 = ghost_y[ghostIndex];
+//        int ghost_dx_copy3 = ghost_dx[ghostIndex];
+//        int ghost_dy_copy3 = ghost_dy[ghostIndex];
+//
+//        int[] dx3 = new int[4];
+//        int[] dy3 = new int[4];
+//
+//        while (true) {
+//            if (ghost_x_copy3 % TILE_SIZE == 0 && ghost_y_copy3 % TILE_SIZE == 0) {
+//                int pos = ghost_x_copy3 / TILE_SIZE + N_TILES * (ghost_y_copy3 / TILE_SIZE);
+//                int count = 0;
+//
+//                if ((screen_data[pos] & 1) == 0 && ghost_dx_copy3 != 1) {
+//                    dx3[count] = -1;
+//                    dy3[count] = 0;
+//                    count++;
+//                }
+//
+//                if ((screen_data[pos] & 2) == 0 && ghost_dy_copy3 != 1) {
+//                    dx3[count] = 0;
+//                    dy3[count] = -1;
+//                    count++;
+//                }
+//
+//                if ((screen_data[pos] & 4) == 0 && ghost_dx_copy3 != -1) {
+//                    dx3[count] = 1;
+//                    dy3[count] = 0;
+//                    count++;
+//                }
+//
+//                if ((screen_data[pos] & 8) == 0 && ghost_dy_copy3 != -1) {
+//                    dx3[count] = 0;
+//                    dy3[count] = 1;
+//                    count++;
+//                }
+//
+//                if (count == 0) {
+//                    if ((screen_data[pos] & 15) == 15) {
+//                        ghost_dx_copy3 = 0;
+//                        ghost_dy_copy3 = 0;
+//                    } else {
+//                        ghost_dx_copy3 = -ghost_dx_copy3;
+//                        ghost_dy_copy3 = -ghost_dy_copy3;
+//                    }
+//                } else {
+//                    count = (int) (Math.random() * count);
+//                    if (count > 3) {
+//                        count = 3;
+//                    }
+//                    ghost_dx_copy3 = dx3[count];
+//                    ghost_dy_copy3 = dy3[count];
+//                }
+//            }
+//
+//            ghost_x_copy3 = ghost_x_copy3 + (ghost_dx_copy3 * ghost_vel[ghostIndex]);
+//            ghost_y_copy3 = ghost_y_copy3 + (ghost_dy_copy3 * ghost_vel[ghostIndex]);
+//
+//            drawGhosts(g2d);
+//
+//            int pacman_x = pacman.get_x();
+//            int pacman_y = pacman.get_y();
+//            boolean Pac_alive = pacman.Pac_alive;
+//
+//            if (pacman_x > (ghost_x_copy3 - 12) && pacman_x < (ghost_x_copy3 + 12)
+//                    && pacman_y > (ghost_y_copy3 - 12) && pacman_y < (ghost_y_copy3 + 12)
+//                    && Running) {
+//                pacman.set_alive(false);
+//            }
+//
+//            try {
+//                Thread.sleep(40);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//
+//            synchronized (this) {
+//                // Przypisanie wartości z kopii zmiennych do zmiennych głównych
+//                ghost_x[ghostIndex] = ghost_x_copy3;
+//                ghost_y[ghostIndex] = ghost_y_copy3;
+//                ghost_dx[ghostIndex] = ghost_dx_copy3;
+//                ghost_dy[ghostIndex] = ghost_dy_copy3;
+//            }
+//        }
+//    }
 
     public void move_ghosts4(int ghostIndex, Graphics2D g2d, short [] screen_data, int TILE_SIZE, int N_TILES, PacGuy pacman, boolean Running) {
         int ghost_x_copy4 = ghost_x[ghostIndex];
