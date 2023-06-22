@@ -12,6 +12,7 @@ public class Model extends JPanel implements ActionListener {
     private final Font font = new Font("Arial", Font.BOLD, 14);
     private boolean Running = false;
     private boolean ghost_on_their_way = false;
+
     public final int TILE_SIZE = 24;
     public final int N_TILES = 15;
     private final int SCREEN_SIZE = N_TILES * TILE_SIZE;
@@ -68,6 +69,7 @@ public class Model extends JPanel implements ActionListener {
 
     private void playGame(Graphics2D g2d){
         boolean start=false;
+
         if(pac_person.Pac_alive==false){
             death();
         }
@@ -195,6 +197,7 @@ public class Model extends JPanel implements ActionListener {
 
         int dx = 1;
         ghosts.ghost_set_on_level(dx, speed);
+
         pac_person.pacguy_set_on_level();
 
         req_dx = 0;		// reset direction controls

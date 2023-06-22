@@ -44,6 +44,7 @@ public class Ghosts extends JPanel {
 
     public void ghost_set_on_level(int dx, int speed){
 
+
         for (int i = 0; i < N_GHOSTS; i++) {
             ghost_y[i] = 5 * TILE_SIZE; //start position
             ghost_x[i] = 4 * TILE_SIZE;
@@ -88,7 +89,8 @@ public class Ghosts extends JPanel {
         ghostThreads[2].interrupt();
         ghostThreads[3].interrupt();
     }
-//to jest najlepsze co mamy
+
+
 
 
     public void move_ghosts1(int ghostIndex, Graphics2D g2d, short[] screen_data, int TILE_SIZE, int N_TILES, PacGuy pacman, boolean Running) {
@@ -99,6 +101,7 @@ public class Ghosts extends JPanel {
 
         int[] dx1 = new int[4];
         int[] dy1 = new int[4];
+
 
         while (true) {
             if (ghost_x_copy1 % TILE_SIZE == 0 && ghost_y_copy1 % TILE_SIZE == 0) {
