@@ -287,47 +287,46 @@ public class Ghosts extends JPanel {
 
         while (true) {
             if (ghost_x_copy3 % TILE_SIZE == 0 && ghost_y_copy3 % TILE_SIZE == 0) {
-                int pos = ghost_x_copy3 / TILE_SIZE + N_TILES * (ghost_y_copy3 / TILE_SIZE);
-                int count = 0;
-
-                if ((screen_data[pos] & 1) == 0 && ghost_dx_copy3 != 1) {
-                    dx3[count] = -1;
-                    dy3[count] = 0;
-                    count++;
-                }
-
-                if ((screen_data[pos] & 2) == 0 && ghost_dy_copy3 != 1) {
-                    dx3[count] = 0;
-                    dy3[count] = -1;
-                    count++;
-                }
-
-                if ((screen_data[pos] & 4) == 0 && ghost_dx_copy3 != -1) {
-                    dx3[count] = 1;
-                    dy3[count] = 0;
-                    count++;
-                }
-
-                if ((screen_data[pos] & 8) == 0 && ghost_dy_copy3 != -1) {
-                    dx3[count] = 0;
-                    dy3[count] = 1;
-                    count++;
-                }
-
-                if (count == 0) {
-                    if ((screen_data[pos] & 15) == 15) {
-                        ghost_dx_copy3 = 0;
-                        ghost_dy_copy3 = 0;
-                    } else {
-                        ghost_dx_copy3 = -ghost_dx_copy3;
-                        ghost_dy_copy3 = -ghost_dy_copy3;
-                    }
-                } else {
+//                int pos = ghost_x_copy3 / TILE_SIZE + N_TILES * (ghost_y_copy3 / TILE_SIZE);
+//                int count = 0;
+//
+//                if ((screen_data[pos] & 1) == 0 && ghost_dx_copy3 != 1) {
+//                    dx3[count] = -1;
+//                    dy3[count] = 0;
+//                    count++;
+//                }
+//
+//                if ((screen_data[pos] & 2) == 0 && ghost_dy_copy3 != 1) {
+//                    dx3[count] = 0;
+//                    dy3[count] = -1;
+//                    count++;
+//                }
+//
+//                if ((screen_data[pos] & 4) == 0 && ghost_dx_copy3 != -1) {
+//                    dx3[count] = 1;
+//                    dy3[count] = 0;
+//                    count++;
+//                }
+//
+//                if ((screen_data[pos] & 8) == 0 && ghost_dy_copy3 != -1) {
+//                    dx3[count] = 0;
+//                    dy3[count] = 1;
+//                    count++;
+//                }
+//
+//                if (count == 0) {
+//                    if ((screen_data[pos] & 15) == 15) {
+//                        ghost_dx_copy3 = 0;
+//                        ghost_dy_copy3 = 0;
+//                    } else {
+//                        ghost_dx_copy3 = -ghost_dx_copy3;
+//                        ghost_dy_copy3 = -ghost_dy_copy3;
+//                    }
+//                } else {
                     int pacman_x = pacman.get_x();
                     int pacman_y = pacman.get_y();
 
                     // Oblicz różnicę pomiędzy położeniem duszka a Pacmana
-                    if
                     int dx = pacman_x - ghost_x_copy3;
                     int dy = pacman_y - ghost_y_copy3;
 
@@ -346,13 +345,38 @@ public class Ghosts extends JPanel {
 
                     ghost_dx_copy3 = dx3[0];
                     ghost_dy_copy3 = dy3[0];
-                }
+//                }
             }
 
             int future_x = ghost_x_copy3 + (ghost_dx_copy3 * ghost_vel[ghostIndex]);
             int future_y = ghost_y_copy3 + (ghost_dy_copy3 * ghost_vel[ghostIndex]);
+            int future_pos = future_x / TILE_SIZE + N_TILES * (future_y / TILE_SIZE);
+            boolean future_collides=true;
 
-            if()
+            while(future_collides==true) {
+                future_collides = false;
+                if ((screen_data[future_pos] & 8) == 1 || dy3[0] == 1) {
+                    dy3[0] = 0;
+                    dx3[0] = -1;
+                    future_collides = true;
+                } else if ((screen_data[future_pos] & 1) == 1 || dx3[0] == -1) {
+                    dy3[0] = 1;
+                    dx3[0] = 0;
+                    future_collides = true;
+                } else if ((screen_data[future_pos] & 2) == 1 || dy[0] == -1) {
+                    dy3[0] = 0;
+                    dx3[0] = 1;
+                    future_collides = true;
+                } else if ((screen_data[future_pos] & 4) == 1 || dx3[0] == 1) {
+                    dy3[0] = -1;
+                    dx3[0] = 0;
+                    future_collides = true;
+                }
+            }
+
+            ghost_dx_copy3 = dx3[0];
+            ghost_dy_copy3 = dy3[0];
+
 
             ghost_x_copy3 = ghost_x_copy3 + (ghost_dx_copy3 * ghost_vel[ghostIndex]);
             ghost_y_copy3 = ghost_y_copy3 + (ghost_dy_copy3 * ghost_vel[ghostIndex]);
