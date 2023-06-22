@@ -12,10 +12,10 @@ public class PacGuy extends JFrame {
     public final int N_TILES = 15;
 
     public void load_pac_images(){
-        down = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/down.gif").getImage();
-        left = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/left.gif").getImage();
-        right = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/right.gif").getImage();
-        up = new ImageIcon("C:/Users/jacek/IdeaProjects/Pac Man/src/imgs/up.gif").getImage();
+        down = new ImageIcon("src/imgs/down.gif").getImage();
+        left = new ImageIcon("src/imgs/left.gif").getImage();
+        right = new ImageIcon("src/imgs/right.gif").getImage();
+        up = new ImageIcon("src/imgs/up.gif").getImage();
     }
 
     public int get_x(){
@@ -27,8 +27,11 @@ public class PacGuy extends JFrame {
     public boolean get_alive(){
         return Pac_alive;
     }
+    public void set_alive(boolean isAlive){
+        this.Pac_alive = isAlive;
+    }
 
-    public void move_pac(int req_dx, int req_dy, short[] screen_data, int score){
+    public int move_pac(int req_dx, int req_dy, short[] screen_data, int score){
         int pos;
         short ch;
         if(pacman_x%TILE_SIZE==0 && pacman_y%TILE_SIZE==0){
@@ -53,6 +56,7 @@ public class PacGuy extends JFrame {
         }
         pacman_x = pacman_x + PACMAN_VEL*pacman_dx;
         pacman_y = pacman_y + PACMAN_VEL*pacman_dy;
+        return score;
     }
 
     public void draw_pac(Graphics2D g2d, int req_dx, int req_dy){
