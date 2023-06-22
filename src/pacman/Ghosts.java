@@ -68,17 +68,35 @@ public class Ghosts extends JPanel {
             ghostThreads[current] = new Thread(() -> move_ghosts(current, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running));
             ghostThreads[current].start();
         }*/
-        ghostThreads[0] = new Thread(() -> move_ghosts(0, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running));
+        ghostThreads[0] = new Thread(() -> {
+            System.out.println("Thread ID: " + Thread.currentThread().getId());
+            move_ghosts(0, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running);
+        });
         ghostThreads[0].start();
-        ghostThreads[1] = new Thread(() -> move_ghosts(1, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running));
+        ghostThreads[1] = new Thread(() -> {
+            System.out.println("Thread ID: " + Thread.currentThread().getId());
+            move_ghosts(1, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running);
+        });
         ghostThreads[1].start();
-        ghostThreads[2] = new Thread(() -> move_ghosts(2, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running));
+        ghostThreads[2] = new Thread(() -> {
+            System.out.println("Thread ID: " + Thread.currentThread().getId());
+            move_ghosts(2, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running);
+        });
         ghostThreads[2].start();
-        ghostThreads[3] = new Thread(() -> move_ghosts(3, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running));
+        ghostThreads[3] = new Thread(() -> {
+            System.out.println("Thread ID: " + Thread.currentThread().getId());
+            move_ghosts(3, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running);
+        });
         ghostThreads[3].start();
-        ghostThreads[4] = new Thread(() -> move_ghosts(4, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running));
+        ghostThreads[4] = new Thread(() -> {
+            System.out.println("Thread ID: " + Thread.currentThread().getId());
+            move_ghosts(4, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running);
+        });
         ghostThreads[4].start();
-        ghostThreads[5] = new Thread(() -> move_ghosts(5, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running));
+        ghostThreads[5] = new Thread(() -> {
+            System.out.println("Thread ID: " + Thread.currentThread().getId());
+            move_ghosts(5, g2d, screen_data, TILE_SIZE, N_TILES, pacman ,Running);
+        });
         ghostThreads[5].start();
     }
 
@@ -176,8 +194,7 @@ public void move_ghosts(int ghostIndex, Graphics2D g2d, short [] screen_data, in
     int pacman_y = pacman.get_y();
     boolean Pac_alive = pacman.Pac_alive;
     while (true) {
-        lock.lock();
-        try {
+        synchronized (this) {
             if (ghost_x[ghostIndex] % TILE_SIZE == 0 && ghost_y[ghostIndex] % TILE_SIZE == 0) {
                 int pos = ghost_x[ghostIndex] / TILE_SIZE + N_TILES * (int) (ghost_y[ghostIndex] / TILE_SIZE);
                 int count = 0;
@@ -243,8 +260,6 @@ public void move_ghosts(int ghostIndex, Graphics2D g2d, short [] screen_data, in
 
                 pacman.set_alive(false);
             }
-        } finally {
-            lock.unlock();
         }
     }
 }
